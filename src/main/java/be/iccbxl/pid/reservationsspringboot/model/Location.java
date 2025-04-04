@@ -1,5 +1,7 @@
 package be.iccbxl.pid.reservationsspringboot.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,9 +9,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
 import com.github.slugify.Slugify;
+
+
+
 @Entity
 @Table(name="locations")
 public class Location {
@@ -29,6 +34,10 @@ public class Location {
 	
 	private String website;
 	private String phone;
+
+    @OneToMany(targetEntity=Show.class, mappedBy="location")
+	private List<Show> shows = new ArrayList<>();
+
 	
 	protected Location() { }
 
@@ -101,10 +110,37 @@ public class Location {
 		this.phone = phone;
 	}
 
+    public List<Show> getShows() {
+		return shows;
+	}
+
+	public Location addShow(Show show) {
+		if(!this.shows.contains(show)) {
+			this.shows.add(show);
+			show.setLocation(this);
+		}
+		
+		return this;
+	}
+	
+	public Location removeShow(Show show) {
+		if(this.shows.contains(show)) {
+			this.shows.remove(show);
+			if(show.getLocation().equals(this)) {
+				show.setLocation(null);
+			}
+		}
+		
+		return this;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Location [id=" + id + ", slug=" + slug + ", designation=" + designation 
 			+ ", address=" + address	+ ", locality=" + locality + ", website=" 
-			+ website + ", phone=" + phone + "]";
+			+ website + ", phone=" + phone + ", shows=" + shows.size() + "]";
 	}
+
+    
 }

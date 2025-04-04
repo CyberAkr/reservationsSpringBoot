@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,7 +30,7 @@ private String email;
 	private String langue;
 	private LocalDateTime created_at;
 	
-	@ManyToMany(mappedBy = "users")
+	@ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
 	private List<Role> roles = new ArrayList<>();
 	@ManyToMany(mappedBy = "users")
 	private List<Representation> representations = new ArrayList<>();

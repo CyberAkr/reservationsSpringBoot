@@ -2,6 +2,8 @@ package be.iccbxl.pid.reservationsspringboot.model;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 
@@ -51,6 +54,41 @@ public class Show {
 	 */
 	@Column(name="updated_at")
 	private LocalDateTime updatedAt;
+    @OneToMany(targetEntity=Representation.class, mappedBy="show")
+	private List<Representation> representations = new ArrayList<>();
+
+    public List<Representation> getRepresentations() {
+		return representations;
+	}
+
+	public Show addRepresentation(Representation representation) {
+		if(!this.representations.contains(representation)) {
+			this.representations.add(representation);
+			representation.setShow(this);
+		}
+		
+		return this;
+	}
+	
+	public Show removeRepresentation(Representation representation) {
+		if(this.representations.contains(representation)) {
+			this.representations.remove(representation);
+			if(representation.getLocation().equals(this)) {
+				representation.setLocation(null);
+			}
+		}
+		
+		return this;
+	}
+
+	@Override
+	public String toString() {
+		return "Show [id=" + id + ", slug=" + slug + ", title=" + title 
+			+ ", description=" + description + ", posterUrl=" + posterUrl + ", location=" 
+			+ location + ", bookable=" + bookable + ", price=" + price
+			+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt 
+			+ ", representations=" + representations.size() + "]";
+	}
 
 	public Show() { }
 	
@@ -148,12 +186,6 @@ public class Show {
 		return createdAt;
 	}
 
-	@Override
-	public String toString() {
-		return "Show [id=" + id + ", slug=" + slug + ", title=" + title 
-			+ ", description=" + description + ", posterUrl=" + posterUrl + ", location=" 
-			+ location + ", bookable=" + bookable + ", price=" + price
-			+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
-	}
+	
 	
 }

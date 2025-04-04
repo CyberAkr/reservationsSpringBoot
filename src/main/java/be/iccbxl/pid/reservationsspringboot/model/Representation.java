@@ -1,17 +1,19 @@
 package be.iccbxl.pid.reservationsspringboot.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Column;
 
-import com.github.slugify.Slugify;
 
 @Entity
 @Table(name="representations")
@@ -23,6 +25,14 @@ public class Representation {
 	@ManyToOne
 	@JoinColumn(name="show_id", nullable=false)
 	private Show show;
+
+    @ManyToMany
+	@JoinTable(
+		  name = "reservations", 
+		  joinColumns = @JoinColumn(name = "representation_id"), 
+		  inverseJoinColumns = @JoinColumn(name = "user_id"))
+	private List<User> users = new ArrayList<>();
+
 
 	/**
 	 * Date de création de la représentation
@@ -38,6 +48,29 @@ public class Representation {
 
 	public Representation() { }
 	
+
+    public List<User> getUsers() {
+		return users;
+	}
+
+	public Representation addUser(User user) {
+		if(!this.users.contains(user)) {
+			this.users.add(user);
+			user.addRepresentation(this);
+		}
+		
+		return this;
+	}
+	
+	public Representation removeUser(User user) {
+		if(this.users.contains(user)) {
+			this.users.remove(user);
+			user.getRepresentations().remove(this);
+		}
+		
+		return this;
+	}
+
 	public Representation(Show show, LocalDateTime when, Location location) {
 		this.show = show;
 		this.when = when;

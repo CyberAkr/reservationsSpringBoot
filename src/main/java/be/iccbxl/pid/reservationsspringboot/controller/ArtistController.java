@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import be.iccbxl.pid.reservationsspringboot.model.Artist;
+import be.iccbxl.pid.reservationsspringboot.model.*;
 import be.iccbxl.pid.reservationsspringboot.service.ArtistService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;

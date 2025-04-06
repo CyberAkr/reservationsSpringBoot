@@ -11,4 +11,5 @@ public class ThymeleafConfiguration {
 	public LayoutDialect thymeleafDialect() {
 	    return new LayoutDialect();
 	}
+	
 }

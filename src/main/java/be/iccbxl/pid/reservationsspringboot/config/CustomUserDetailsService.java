@@ -1,6 +1,5 @@
 package be.iccbxl.pid.reservationsspringboot.config;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import be.iccbxl.pid.reservationsspringboot.model.Role;
 import be.iccbxl.pid.reservationsspringboot.model.User;
 import be.iccbxl.pid.reservationsspringboot.repository.UserRepository;
 
@@ -19,26 +19,25 @@ import be.iccbxl.pid.reservationsspringboot.repository.UserRepository;
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
-	
+    
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final User user = userRepository.findByLogin(username);
-		
+        
         if (user == null) {
             throw new UsernameNotFoundException("User " + username + " not found");
         }
         
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        
+        // Parcourir chaque rôle et ajouter l'autorité correspondante
+        for (Role role : user.getRoles()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole()));
+        }
+        
         return new org.springframework.security.core.userdetails.User(
-        		username, 
-        		user.getPassword(), 
-        		getGrantedAuthorities(user.getRoles().toString()));
+                username, 
+                user.getPassword(), 
+                authorities);
     }
-	
-    private List<GrantedAuthority> getGrantedAuthorities(String role) {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
-
-        return authorities;
-    }
-
 }

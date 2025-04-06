@@ -5,11 +5,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-
 import jakarta.persistence.ManyToMany;
 import java.util.ArrayList;	
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="artists")
@@ -20,8 +20,10 @@ public class Artist {
 	private String firstname;
 	private String lastname;
 	
+	@JsonIgnore
 	@ManyToMany(mappedBy = "artists")
 	private List<Type> types = new ArrayList<>();
+	
 
 	public Artist() {}
 
@@ -70,11 +72,16 @@ public class Artist {
 		
 		return this;
 	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	@Override
 	public String toString() {
 		return firstname + " " + lastname;
 	}
+
+   
 
 }
 

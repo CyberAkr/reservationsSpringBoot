@@ -35,13 +35,13 @@ public class Show {
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
     
-    @OneToMany(mappedBy="show")
+	@OneToMany(mappedBy = "show")
     private List<Representation> representations = new ArrayList<>();
 
-    @ManyToMany(mappedBy="shows")
+	@ManyToMany(mappedBy = "shows")
     private List<ArtistType> artistTypes = new ArrayList<>();
     
-    @OneToMany(mappedBy="show")
+    @OneToMany(mappedBy = "show")
     private List<Review> reviews = new ArrayList<>();
 
     public Show() { }
@@ -103,13 +103,13 @@ public class Show {
         return location;
     }
 
-    public void setLocation(Location location) {
+	public void setLocation(Location location) {
         if (this.location != null) {
-            this.location.removeShow(this);
+            this.location.getShows().remove(this);
         }
         this.location = location;
         if (location != null) {
-            location.addShow(this);
+            location.getShows().add(this);
         }
     }
 
@@ -173,18 +173,18 @@ public class Show {
         return reviews;
     }
     
-    public Show addReview(Review review) {
-        if (!this.reviews.contains(review)) {
+	public Show addReview(Review review) {
+        if(!this.reviews.contains(review)) {
             this.reviews.add(review);
             review.setShow(this);
         }
         return this;
     }
     
-    public Show removeReview(Review review) {
-        if (this.reviews.contains(review)) {
+	public Show removeReview(Review review) {
+        if(this.reviews.contains(review)) {
             this.reviews.remove(review);
-            if (review.getShow().equals(this)) {
+            if(review.getShow().equals(this)) {
                 review.setShow(null);
             }
         }

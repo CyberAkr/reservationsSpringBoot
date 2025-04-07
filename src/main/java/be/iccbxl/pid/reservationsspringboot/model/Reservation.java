@@ -26,8 +26,9 @@ public class Reservation {
     @Column(length = 60)
     private String status;
     
-    @OneToMany(targetEntity=RepresentationReservation.class, mappedBy="reservation", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RepresentationReservation> representationReservations = new ArrayList<>();
+
 
     protected Reservation() {}
 
@@ -99,4 +100,19 @@ public class Reservation {
                 ", status='" + status + '\'' +
                 '}';
     }
+    public List<Representation> getRepresentations() {
+        List<Representation> representations = new ArrayList<>();
+        for(RepresentationReservation rr : representationReservations) {
+            representations.add(rr.getRepresentation());
+        }
+        return representations;
+    }
+    
+    // Méthode pour ajouter une représentation avec prix et quantité
+    public Reservation addRepresentation(Representation representation, Price price, int quantity) {
+        RepresentationReservation rr = new RepresentationReservation(representation, this, price, quantity);
+        representationReservations.add(rr);
+        return this;
+    }
+
 }

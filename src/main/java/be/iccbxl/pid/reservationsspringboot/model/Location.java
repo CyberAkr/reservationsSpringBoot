@@ -33,18 +33,16 @@ public class Location {
 	
 	@ManyToOne
 	@JoinColumn(name="locality_id", nullable=false)
-	
 	private Locality locality;
 	
 	private String website;
 	private String phone;
 
-    @OneToMany(targetEntity=Show.class, mappedBy="location")
-
-	private List<Show> shows = new ArrayList<>();
-    @OneToMany(targetEntity=Representation.class, mappedBy="location")
-	private List<Representation> representations = new ArrayList<>();
-
+    @OneToMany(mappedBy = "location")
+    private List<Show> shows = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "location")
+    private List<Representation> representations = new ArrayList<>();
 
 	public List<Representation> getRepresentations() {
 		return representations;

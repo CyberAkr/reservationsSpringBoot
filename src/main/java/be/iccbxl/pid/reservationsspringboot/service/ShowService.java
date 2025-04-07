@@ -48,5 +48,10 @@ public class ShowService {
 	public List<Show> getFromLocation(Location location) {
 		return repository.findByLocation(location);
 	}
+
+    public Optional<Show> get(long showId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'get'");
+    }
 }
 

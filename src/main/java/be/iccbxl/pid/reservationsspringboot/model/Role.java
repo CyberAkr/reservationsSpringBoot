@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
 
@@ -20,14 +21,8 @@ public class Role {
 	private Long id;
 	private String role;
 	
-	@ManyToMany
-	@JoinTable(
-		  name = "user_role", 
-		  joinColumns = @JoinColumn(name = "role_id"), 
-		  inverseJoinColumns = @JoinColumn(name = "user_id"))
-	private List<User> users = new ArrayList<>();
-	
-
+	@OneToMany(mappedBy = "role")
+    private List<UserRole> userRoles = new ArrayList<>();
 	
 	protected Role() {	}
 	
@@ -47,27 +42,20 @@ public class Role {
 	public void setRole(String role) {
 		this.role = role;
 	}
-    public List<User> getUsers() {
-		return users;
-	}
-
-	public Role addUser(User user) {
-		if(!this.users.contains(user)) {
-			this.users.add(user);
-			user.addRole(this);
-		}
-		
-		return this;
-	}
-	
-	public Role removeUser(User user) {
-		if(this.users.contains(user)) {
-			this.users.remove(user);
-			user.getRoles().remove(this);
-		}
-		
-		return this;
-	}
+	public List<User> getUsers() {
+        List<User> users = new ArrayList<>();
+        for(UserRole userRole : userRoles) {
+            users.add(userRole.getUser());
+        }
+        return users;
+    }
+    
+    // Méthode pour ajouter un utilisateur
+    public Role addUser(User user) {
+        UserRole userRole = new UserRole(user, this);
+        userRoles.add(userRole);
+        return this;
+    }
 
 
 	@Override

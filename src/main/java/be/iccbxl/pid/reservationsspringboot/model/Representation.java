@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 
@@ -33,21 +35,24 @@ public class Representation {
 		  inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private List<User> users = new ArrayList<>();
 
-
-	/**
-	 * Date de création de la représentation
-	 */
-	private LocalDateTime when;
+  @OneToMany(mappedBy = "representation")
+    private List<RepresentationReservation> representationReservations = new ArrayList<>();
 	
-	/**
-	 * Lieu de prestation de la représentation
-	 */
+ @Column(name = "when")
+    private LocalDateTime when
+	;
 	@ManyToOne
-	@JoinColumn(name="location_id", nullable=true)
-	private Location location;
+    @JoinColumn(name="location_id", nullable=true)
+    private Location location;
 
 	public Representation() { }
-	
+	public List<Reservation> getReservations() {
+        List<Reservation> reservations = new ArrayList<>();
+        for(RepresentationReservation rr : representationReservations) {
+            reservations.add(rr.getReservation());
+        }
+        return reservations;
+    }
 
     public List<User> getUsers() {
 		return users;

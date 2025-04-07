@@ -6,7 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;  
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinTable;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +20,8 @@ public class Type {
 	private Long id;
 	private String type;
 	
-	@ManyToMany
-	@JoinTable(
-		  name = "artist_type", 
-		  joinColumns = @JoinColumn(name = "type_id"), 
-		  inverseJoinColumns = @JoinColumn(name = "artist_id"))
-	private List<Artist> artists = new ArrayList<>();
-	
-	public Type() {
-	}
+	 @OneToMany(mappedBy = "type")
+    private List<ArtistType> artistTypes = new ArrayList<>();
 
 	public Type(Long id, String type) {
 		super();
@@ -52,31 +46,45 @@ public class Type {
 	}
 
 	public List<Artist> getArtists() {
-		return artists;
-	}
-
-	public Type addArtist(Artist artist) {
-		if(!this.artists.contains(artist)) {
-			this.artists.add(artist);
-			artist.addType(this);
-		}
-		
-		return this;
-	}
-	
-	public Type removeType(Artist artist) {
-		if(this.artists.contains(artist)) {
-			this.artists.remove(artist);
-			artist.getTypes().remove(this);
-		}
-		
-		return this;
-	}
-
-	@Override
-	public String toString() {
-		return "Type [id=" + id + ", type=" + type + "]";
-	}
-	
-	
+        List<Artist> artists = new ArrayList<>();
+        for(ArtistType artistType : this.artistTypes) {
+            artists.add(artistType.getArtist());
+        }
+        return artists;
+    }
+    
+    // Méthode d'ajout à adapter
+    public Type addArtist(Artist artist) {
+        ArtistType artistType = new ArtistType();
+        artistType.setArtist(artist);
+        artistType.setType(this);
+        if(!hasArtistType(artistType)) {
+            this.artistTypes.add(artistType);
+        }
+        return this;
+    }
+    
+    public Type removeArtist(Artist artist) {
+        ArtistType toRemove = null;
+        for(ArtistType at : artistTypes) {
+            if(at.getArtist().equals(artist)) {
+                toRemove = at;
+                break;
+            }
+        }
+        if(toRemove != null) {
+            this.artistTypes.remove(toRemove);
+        }
+        return this;
+    }
+    
+    private boolean hasArtistType(ArtistType artistType) {
+        for(ArtistType at : artistTypes) {
+            if(at.getArtist().equals(artistType.getArtist()) && 
+               at.getType().equals(artistType.getType())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

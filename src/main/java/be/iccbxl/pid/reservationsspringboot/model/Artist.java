@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+
 import java.util.ArrayList;	
 import java.util.List;
 
@@ -21,9 +23,12 @@ public class Artist {
 	private String lastname;
 	
 	@JsonIgnore
-	@ManyToMany(mappedBy = "artists")
-	private List<Type> types = new ArrayList<>();
 	
+	
+	@OneToMany(mappedBy = "artist")
+private List<ArtistType> artistTypes = new ArrayList<>();
+
+
 
 	public Artist() {}
 
@@ -51,37 +56,42 @@ public class Artist {
 		this.lastname = lastname;
 	}
 	
-	public List<Type> getTypes() {
-		return types;
-	}
-
-	public Artist addType(Type type) {
-		if(!this.types.contains(type)) {
-			this.types.add(type);
-			type.addArtist(this);
-		}
-		
-		return this;
-	}
 	
-	public Artist removeType(Type type) {
-		if(this.types.contains(type)) {
-			this.types.remove(type);
-			type.getArtists().remove(this);
-		}
-		
-		return this;
-	}
+
+	public List<Type> getTypes() {
+        List<Type> types = new ArrayList<>();
+        for(ArtistType artistType : this.artistTypes) {
+            types.add(artistType.getType());
+        }
+        return types;
+    }
+    
+    // Méthode d'ajout à adapter
+    public Artist addType(Type type) {
+        ArtistType artistType = new ArtistType();
+        artistType.setArtist(this);
+        artistType.setType(type);
+        if(!this.artistTypes.contains(artistType)) {
+            this.artistTypes.add(artistType);
+        }
+        return this;
+    }
+    
+    public Artist removeType(Type type) {
+        ArtistType toRemove = null;
+        for(ArtistType at : artistTypes) {
+            if(at.getType().equals(type)) {
+                toRemove = at;
+                break;
+            }
+        }
+        if(toRemove != null) {
+            this.artistTypes.remove(toRemove);
+        }
+        return this;
+    }
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	@Override
-	public String toString() {
-		return firstname + " " + lastname;
-	}
-
-   
-
 }
-

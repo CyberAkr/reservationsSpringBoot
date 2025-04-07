@@ -2,7 +2,9 @@ package be.iccbxl.pid.reservationsspringboot.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "prices")
@@ -22,6 +24,9 @@ public class Price {
 
     @Column
     private Date end_date;
+
+     @OneToMany(mappedBy = "price")
+    private List<RepresentationReservation> representationReservations = new ArrayList<>();
 
     // Changement de protected à public
     public Price() {}

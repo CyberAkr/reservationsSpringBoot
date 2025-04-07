@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 	
 @Entity
@@ -30,35 +31,36 @@ private String email;
 	private String langue;
 	private LocalDateTime created_at;
 	
-	@ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
-	private List<Role> roles = new ArrayList<>();
-	@ManyToMany(mappedBy = "users")
-	private List<Representation> representations = new ArrayList<>();
-
-
+	@OneToMany(mappedBy = "user")
+    private List<UserRole> userRoles = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user")
+    private List<Reservation> reservations = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user")
+    private List<Review> reviews = new ArrayList<>();
+    
+    // Constructeurs et getters/setters...
+    
+    // Méthode auxiliaire pour obtenir les rôles
+    public List<Role> getRoles() {
+        List<Role> roles = new ArrayList<>();
+        for(UserRole userRole : userRoles) {
+            roles.add(userRole.getRole());
+        }
+        return roles;
+    }
+    
+    // Méthode pour ajouter un rôle
+    public User addRole(Role role) {
+        UserRole userRole = new UserRole(this, role);
+        userRoles.add(userRole);
+        return this;
+    }
 	protected User() {}
 
-	public List<Representation> getRepresentations() {
-		return representations;
-	}
-
-public User addRepresentation(Representation representation) {
-		if(!this.representations.contains(representation)) {
-			this.representations.add(representation);
-			representation.addUser(this);
-		}
-		
-		return this;
-	}
 	
-	public User removeRepresentation(Representation representation) {
-		if(this.representations.contains(representation)) {
-			this.representations.remove(representation);
-			representation.getUsers().remove(this);
-		}
-		
-		return this;
-	}
+	
 	
 	public User(String login, String firstname, String lastname) {
 		this.login = login;
@@ -119,34 +121,18 @@ public User addRepresentation(Representation representation) {
 		this.langue = langue;
 	}
 
-	public List<Role> getRoles() {
-		return roles;
-	}
-
-	public LocalDateTime getCreated_at() {
-		return created_at;
-	}
-	
-	public User addRole(Role role) {
-		if(!this.roles.contains(role)) {
-			this.roles.add(role);
-			role.addUser(this);
-		}
-		
-		return this;
-	}
-	
-	public User removeRole(Role role) {
-		if(this.roles.contains(role)) {
-			this.roles.remove(role);
-			role.getUsers().remove(this);
-		}
-		
-		return this;
-	}
-
 	@Override
 	public String toString() {
 		return login + "(" + firstname + " " + lastname + ")";
 	}
+
+	public List<User> getRepresentations() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getRepresentations'");
+	}
+
+    public void addRepresentation(Representation representation) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addRepresentation'");
+    }
 }

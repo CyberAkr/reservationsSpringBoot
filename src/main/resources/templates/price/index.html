@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/main :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:fragment="title">Liste des prix</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <h1>Liste des prix</h1>
+    
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Prix</th>
+                    <th>Date début</th>
+                    <th>Date fin</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="price : ${prices}">
+                    <td th:text="${price.type}"></td>
+                    <td th:text="${price.price}"></td>
+                    <td th:text="${price.start_date}"></td>
+                    <td th:text="${price.end_date}"></td>
+                    <td>
+                        <a th:href="@{/prices/{id}(id=${price.id})}" class="btn btn-primary">Voir</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <a th:href="@{/prices/create}" class="btn btn-success">Ajouter</a>
+    </div>
+</body>
+</html>

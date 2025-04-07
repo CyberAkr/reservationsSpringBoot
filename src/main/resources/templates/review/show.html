@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/main :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:fragment="title">Détail d'un avis</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <h1>Détail d'un avis</h1>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 th:text="${review.show.title}"></h3>
+                <p>Par <span th:text="${review.user.login}"></span></p>
+            </div>
+            <div class="card-body">
+                <p><strong>Étoiles:</strong> <span th:text="${review.stars}"></span>/5</p>
+                <p><strong>Avis:</strong></p>
+                <p th:text="${review.review}"></p>
+                <p><strong>Statut:</strong> <span th:text="${review.validated ? 'Validé' : 'En attente de validation'}"></span></p>
+                <p><strong>Créé le:</strong> <span th:text="${review.created_at}"></span></p>
+                <p><strong>Mis à jour le:</strong> <span th:text="${review.updated_at}"></span></p>
+            </div>
+            <div class="card-footer">
+                <a th:href="@{/reviews}" class="btn btn-secondary">Retour à la liste</a>
+                <a th:href="@{/reviews/{id}/validate(id=${review.id})}" class="btn btn-success" th:if="${!review.validated}">Valider</a>
+                <a th:href="@{/reviews/{id}/delete(id=${review.id})}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet avis?')">Supprimer</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

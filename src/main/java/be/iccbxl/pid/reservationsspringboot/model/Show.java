@@ -16,6 +16,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.github.slugify.Slugify;
 
 @Entity
@@ -39,6 +40,8 @@ public class Show {
 	 */
 	@ManyToOne
 	@JoinColumn(name="location_id", nullable=true)
+	
+
 	private Location location;
 	
 	private boolean bookable;

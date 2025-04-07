@@ -11,6 +11,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.slugify.Slugify;
 
 
@@ -30,12 +33,14 @@ public class Location {
 	
 	@ManyToOne
 	@JoinColumn(name="locality_id", nullable=false)
+	
 	private Locality locality;
 	
 	private String website;
 	private String phone;
 
     @OneToMany(targetEntity=Show.class, mappedBy="location")
+
 	private List<Show> shows = new ArrayList<>();
     @OneToMany(targetEntity=Representation.class, mappedBy="location")
 	private List<Representation> representations = new ArrayList<>();

@@ -30,34 +30,26 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 public class SpringSecurityConfig {
 	//…
     @Bean
-public SecurityFilterChain configure(final HttpSecurity http) throws Exception {
-    return http.cors(Customizer.withDefaults())
-            .csrf(csrf -> csrf
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-            )
-            .authorizeHttpRequests(auth -> {
-                auth.requestMatchers("/admin").hasRole("admin");
-                auth.requestMatchers("/user").hasRole("member");
-                
-                //API
-                auth.requestMatchers("/api/public/**").permitAll(); // Endpoints publics
-                auth.requestMatchers("/api/admin/**").hasRole("admin"); // Endpoints réservés aux administrateurs
-
-                auth.anyRequest().permitAll();
-            })
-            .httpBasic(Customizer.withDefaults())
-            .formLogin(form -> form
-                .loginPage("/login")
-                .usernameParameter("login")
-                .failureUrl("/login?loginError=true"))
-            .logout(logout -> logout
-                .logoutSuccessUrl("/login?logoutSuccess=true")
-                .deleteCookies("JSESSIONID"))
-            .exceptionHandling(exception -> exception
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login?loginRequired=true")))
-            .build();
-}   
+    public SecurityFilterChain configure(final HttpSecurity http) throws Exception {
+        return http.cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf
+                    .ignoringRequestMatchers("/api/public/**")  // Ajouter cette ligne pour ignorer CSRF pour les endpoints publics
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                    .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                )
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/admin").hasRole("admin");
+                    auth.requestMatchers("/user").hasRole("member");
+                    
+                    //API
+                    auth.requestMatchers("/api/public/**").permitAll(); // Endpoints publics
+                    auth.requestMatchers("/api/admin/**").hasRole("admin"); // Endpoints réservés aux administrateurs
+    
+                    auth.anyRequest().permitAll();
+                })
+                // Reste de la configuration inchangé
+                .build();
+    }
 @Bean
 public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();

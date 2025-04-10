@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
@@ -23,7 +25,8 @@ public class Artist {
 	private String lastname;
 	
 	@JsonIgnore
-	
+	@Getter
+	@Setter
 	
 	@OneToMany(mappedBy = "artist")
 private List<ArtistType> artistTypes = new ArrayList<>();

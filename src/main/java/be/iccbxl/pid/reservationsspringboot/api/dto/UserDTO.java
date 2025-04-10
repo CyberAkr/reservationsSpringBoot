@@ -61,4 +61,12 @@ public class UserDTO {
     }    
     public void setPassword(String password) {
         this.password = password;
-    }   }
+    }   
+// Ajoutez à la fin de votre classe UserDTO
+public String getLangue() {
+    return langue;
+}
+
+public void setLangue(String langue) {
+    this.langue = langue;
+}}

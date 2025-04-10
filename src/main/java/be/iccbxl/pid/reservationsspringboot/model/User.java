@@ -10,18 +10,21 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Setter;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
+import lombok.Getter;
+
 	
 @Entity
 @Table(name="users")
 public class User {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY) // Changez AUTO à IDENTITY
 	private Long id;
 	private String login;
 	private String password;
@@ -30,6 +33,9 @@ public class User {
 private String email;
 	private String langue;
 	private LocalDateTime created_at;
+	
+    @Setter
+	@Getter
 	
 	@OneToMany(mappedBy = "user")
     private List<UserRole> userRoles = new ArrayList<>();
@@ -40,7 +46,6 @@ private String email;
     @OneToMany(mappedBy = "user")
     private List<Review> reviews = new ArrayList<>();
     
-    // Constructeurs et getters/setters...
     
     // Méthode auxiliaire pour obtenir les rôles
     public List<Role> getRoles() {
@@ -50,6 +55,7 @@ private String email;
         }
         return roles;
     }
+	
     
     // Méthode pour ajouter un rôle
     public User addRole(Role role) {
@@ -57,7 +63,7 @@ private String email;
         userRoles.add(userRole);
         return this;
     }
-	protected User() {}
+	public User() {}
 
 	
 	
@@ -135,4 +141,11 @@ private String email;
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'addRepresentation'");
     }
+public LocalDateTime getCreatedAt() {
+    return created_at;
+}
+
+public void setCreatedAt(LocalDateTime created_at) {
+    this.created_at = created_at;
+}
 }
